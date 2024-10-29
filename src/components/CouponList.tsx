@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Space, Button, Layout, Card, Typography, Tooltip, Form, Input, Select, Row, Col } from 'antd';
-import { TagOutlined, UserOutlined, LogoutOutlined, SearchOutlined, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { Table, Space, Button, Layout, Card, Typography, Tooltip, Form, Input, Select, Row, Col, Modal, Descriptions } from 'antd';
+import { TagOutlined, UserOutlined, LogoutOutlined, SearchOutlined, PlusOutlined, UnorderedListOutlined, EyeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { CouponTemplate, QueryParams, queryCouponTemplates } from '../api/couponApi';
@@ -26,6 +26,10 @@ const CouponList: React.FC = () => {
     username: 'shency',
     shopId: '1000501L'
   };
+
+  // 添加查看详情的状态
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+  const [currentCoupon, setCurrentCoupon] = useState<CouponTemplate | null>(null);
 
   // 添加 useEffect 钩子，在组件挂载时执行默认搜索
   useEffect(() => {
@@ -91,12 +95,63 @@ const CouponList: React.FC = () => {
     });
   };
 
-  // 更新列定义
+  // 处理查看详情
+  const handleView = (record: CouponTemplate) => {
+    setCurrentCoupon(record);
+    setIsViewModalVisible(true);
+  };
+
+  // 渲染详情弹窗内容
+  const renderCouponDetails = () => {
+    if (!currentCoupon) return null;
+
+    return (
+      <Descriptions bordered column={2}>
+        <Descriptions.Item label="优惠券ID" span={2}>
+          {currentCoupon.couponTemplateId}
+        </Descriptions.Item>
+        <Descriptions.Item label="优惠券名称" span={2}>
+          {currentCoupon.name}
+        </Descriptions.Item>
+        <Descriptions.Item label="优惠券来源">
+          {currentCoupon.source === 0 ? '店铺券' : '平台券'}
+        </Descriptions.Item>
+        <Descriptions.Item label="优惠对象">
+          {currentCoupon.target === 0 ? `商品专属 (${currentCoupon.goods || '未指定商品'})` : '全店通用'}
+        </Descriptions.Item>
+        <Descriptions.Item label="优惠类型">
+          {['立减券', '满减券', '折扣券'][currentCoupon.type] || '未知类型'}
+        </Descriptions.Item>
+        <Descriptions.Item label="库存">
+          {currentCoupon.stock}
+        </Descriptions.Item>
+        <Descriptions.Item label="开始时间" span={2}>
+          {moment(currentCoupon.validStartTime).format('YYYY-MM-DD HH:mm:ss')}
+        </Descriptions.Item>
+        <Descriptions.Item label="结束时间" span={2}>
+          {moment(currentCoupon.validEndTime).format('YYYY-MM-DD HH:mm:ss')}
+        </Descriptions.Item>
+        <Descriptions.Item label="领取规则" span={2}>
+          <pre style={{ margin: 0 }}>{currentCoupon.receiveRule}</pre>
+        </Descriptions.Item>
+        <Descriptions.Item label="消耗规则" span={2}>
+          <pre style={{ margin: 0 }}>{currentCoupon.consumeRule}</pre>
+        </Descriptions.Item>
+        <Descriptions.Item label="状态">
+          {currentCoupon.status === 0 ? '有效' : '无效'}
+        </Descriptions.Item>
+      </Descriptions>
+    );
+  };
+
+  // 更新列定义，添加操作列
   const columns = [
     {
       title: '优惠券ID',
       dataIndex: 'couponTemplateId',
       key: 'couponTemplateId',
+      width: 200,
+      ellipsis: true,
     },
     {
       title: '优惠券名称',
@@ -110,7 +165,7 @@ const CouponList: React.FC = () => {
       render: (source: number) => source === 0 ? '店铺券' : '平台券',
     },
     {
-      title: '使用围',
+      title: '优惠对象',
       dataIndex: 'target',
       key: 'target',
       render: (target: number, record: CouponTemplate) => {
@@ -138,9 +193,9 @@ const CouponList: React.FC = () => {
       title: '有效期',
       key: 'validTime',
       render: (record: CouponTemplate) => (
-        <Space>
-          {moment(record.validStartTime).format('YYYY-MM-DD')} 至
-          {moment(record.validEndTime).format('YYYY-MM-DD')}
+        <Space direction="vertical" size="small">
+          <span>开始：{moment(record.validStartTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+          <span>结束：{moment(record.validEndTime).format('YYYY-MM-DD HH:mm:ss')}</span>
         </Space>
       ),
     },
@@ -149,6 +204,21 @@ const CouponList: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status: number) => status === 0 ? '有效' : '无效',
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 100,
+      render: (_, record: CouponTemplate) => (
+        <Button 
+          type="link" 
+          icon={<EyeOutlined />} 
+          onClick={() => handleView(record)}
+        >
+          查看
+        </Button>
+      ),
     },
   ];
 
@@ -259,6 +329,21 @@ const CouponList: React.FC = () => {
           />
         </Card>
       </div>
+
+      {/* 添加详情弹窗 */}
+      <Modal
+        title="优惠券详情"
+        open={isViewModalVisible}
+        onCancel={() => setIsViewModalVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setIsViewModalVisible(false)}>
+            关闭
+          </Button>
+        ]}
+        width={800}
+      >
+        {renderCouponDetails()}
+      </Modal>
     </div>
   );
 };
