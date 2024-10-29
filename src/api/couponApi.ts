@@ -10,7 +10,7 @@ export interface ApiResponse<T = unknown> {
 
 // 优惠券模板接口
 export interface CouponTemplate {
-  couponTemplateId: number;
+  couponTemplateId: bigint;
   name: string;
   source: number;
   target: number;
@@ -100,6 +100,44 @@ export const queryCouponTemplates = async (params: QueryParams): Promise<PageRes
     `${API_BASE_URL}/coupon-template/page?${queryParams.toString()}`, 
     {
       method: 'GET',
+      headers: {
+        'Accept': '*/*',
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+// 查询优惠券详情
+export const queryCouponTemplateDetail = async (couponTemplateId: bigint): Promise<ApiResponse<CouponTemplate>> => {
+  const response = await fetch(
+    `${API_BASE_URL}/coupon-template/query?couponTemplateId=${couponTemplateId.toString()}`,
+    {
+      method: 'GET',
+      headers: {
+        'Accept': '*/*',
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+// 结束优惠券模板
+export const terminateCouponTemplate = async (couponTemplateId: bigint): Promise<ApiResponse> => {
+  const response = await fetch(
+    `${API_BASE_URL}/coupon-template/terminate?couponTemplateId=${couponTemplateId.toString()}`,
+    {
+      method: 'POST',
       headers: {
         'Accept': '*/*',
       }

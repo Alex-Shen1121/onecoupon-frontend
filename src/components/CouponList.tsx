@@ -3,7 +3,7 @@ import { Table, Space, Button, Layout, Card, Typography, Tooltip, Form, Input, S
 import { TagOutlined, UserOutlined, LogoutOutlined, SearchOutlined, PlusOutlined, UnorderedListOutlined, EyeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { CouponTemplate, QueryParams, queryCouponTemplates } from '../api/couponApi';
+import { CouponTemplate, QueryParams, queryCouponTemplates, queryCouponTemplateDetail, terminateCouponTemplate } from '../api/couponApi';
 import { TablePaginationConfig } from 'antd/es/table';
 
 const { Header } = Layout;
@@ -47,7 +47,11 @@ const CouponList: React.FC = () => {
       const result = await queryCouponTemplates(params);
       
       if (result.code === "0") {
-        setData(result.data);
+        const formattedData = result.data.map(item => ({
+          ...item,
+          couponTemplateId: BigInt(item.couponTemplateId)
+        }));
+        setData(formattedData);
         setPagination(prev => ({ 
           ...prev, 
           current: params.pageNum,
@@ -96,9 +100,23 @@ const CouponList: React.FC = () => {
   };
 
   // 处理查看详情
-  const handleView = (record: CouponTemplate) => {
-    setCurrentCoupon(record);
-    setIsViewModalVisible(true);
+  const handleView = async (record: CouponTemplate) => {
+    try {
+      const result = await queryCouponTemplateDetail(record.couponTemplateId);
+      if (result.code === "0" && result.data) {
+        // 转换 ID 为 BigInt
+        const couponDetail = {
+          ...result.data,
+          couponTemplateId: BigInt(result.data.couponTemplateId)
+        };
+        setCurrentCoupon(couponDetail);
+        setIsViewModalVisible(true);
+      } else {
+        console.error('获取优惠券详情失败:', result.info);
+      }
+    } catch (error) {
+      console.error('获取优惠券详情失败:', error);
+    }
   };
 
   // 渲染详情弹窗内容
@@ -108,7 +126,7 @@ const CouponList: React.FC = () => {
     return (
       <Descriptions bordered column={2}>
         <Descriptions.Item label="优惠券ID" span={2}>
-          {currentCoupon.couponTemplateId}
+          {currentCoupon.couponTemplateId.toString()}
         </Descriptions.Item>
         <Descriptions.Item label="优惠券名称" span={2}>
           {currentCoupon.name}
@@ -138,10 +156,37 @@ const CouponList: React.FC = () => {
           <pre style={{ margin: 0 }}>{currentCoupon.consumeRule}</pre>
         </Descriptions.Item>
         <Descriptions.Item label="状态">
-          {currentCoupon.status === 0 ? '有效' : '无效'}
+          {currentCoupon.status === 0 ? '生效中' : '已无效'}
         </Descriptions.Item>
       </Descriptions>
     );
+  };
+
+  // 添加处理结束优惠券的函数
+  const handleTerminate = async (record: CouponTemplate) => {
+    Modal.confirm({
+      title: '结束优惠券',
+      content: '是否确认结束券模板？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          const result = await terminateCouponTemplate(record.couponTemplateId);
+          if (result.code === "0") {
+            // 操作成功后刷新列表
+            fetchData({
+              pageNum: pagination.current,
+              pageSize: pagination.pageSize,
+              ...form.getFieldsValue()
+            });
+          } else {
+            console.error('结束优惠券失败:', result.info);
+          }
+        } catch (error) {
+          console.error('结束优惠券失败:', error);
+        }
+      }
+    });
   };
 
   // 更新列定义，添加操作列
@@ -152,6 +197,8 @@ const CouponList: React.FC = () => {
       key: 'couponTemplateId',
       width: 200,
       ellipsis: true,
+      fixed: 'left' as const,
+      render: (id: bigint) => id.toString(),
     },
     {
       title: '优惠券名称',
@@ -203,21 +250,33 @@ const CouponList: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (status: number) => status === 0 ? '有效' : '无效',
+      render: (status: number) => status === 0 ? '生效中' : '已结束',
     },
     {
       title: '操作',
       key: 'action',
-      fixed: 'right',
-      width: 100,
-      render: (_, record: CouponTemplate) => (
-        <Button 
-          type="link" 
-          icon={<EyeOutlined />} 
-          onClick={() => handleView(record)}
-        >
-          查看
-        </Button>
+      fixed: 'right' as const,
+      width: 120, // 减小宽度
+      render: (_: unknown, record: CouponTemplate) => (
+        <Space size="small">
+          <Button 
+            type="link" 
+            size="small"
+            onClick={() => handleView(record)}
+          >
+            查看
+          </Button>
+          {record.status === 0 && (
+            <Button 
+              type="link" 
+              size="small"
+              danger
+              onClick={() => handleTerminate(record)}
+            >
+              结束
+            </Button>
+          )}
+        </Space>
       ),
     },
   ];

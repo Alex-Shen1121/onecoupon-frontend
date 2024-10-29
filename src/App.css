@@ -9,202 +9,204 @@
 */
 
 /* 确保根元素和body占满整个视口 */
-html, body, #root {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+html,
+body,
+#root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+    filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+    filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
 }
 
 .card {
-  padding: 2em;
+    padding: 2em;
 }
 
 .read-the-docs {
-  color: #888;
+    color: #888;
 }
 
 .ant-message-notice-content {
-  padding: 10px 16px;
-  border-radius: 4px;
-  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
-    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    padding: 10px 16px;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+        0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
 }
 
 .ant-message-success .ant-message-notice-content {
-  background-color: #f6ffed;
-  border: 1px solid #b7eb8f;
+    background-color: #f6ffed;
+    border: 1px solid #b7eb8f;
 }
 
 .ant-message-error .ant-message-notice-content {
-  background-color: #fff2f0;
-  border: 1px solid #ffccc7;
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
 }
 
 /* 添加到文件末尾 */
 
 .home-container {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  position: relative;
-  overflow: hidden;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    position: relative;
+    overflow: hidden;
 }
 
 .content-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
 }
 
 .status-bar {
-  background: #fff;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  margin-bottom: 20px;
-  border-radius: 4px;
+    background: #fff;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    border-radius: 4px;
 }
 
 .project-name {
-  font-weight: bold;
-  font-size: 18px;
-  color: #1890ff;
+    font-weight: bold;
+    font-size: 18px;
+    color: #1890ff;
 }
 
 .user-actions {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .user-actions .ant-btn {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .main-title {
-  font-size: 3rem !important;
-  color: #1a365d;
-  margin-bottom: 0.5rem !important;
+    font-size: 3rem !important;
+    color: #1a365d;
+    margin-bottom: 0.5rem !important;
 }
 
 .title-icon {
-  margin-right: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .subtitle {
-  color: #4a5568;
-  margin-bottom: 2rem !important;
+    color: #4a5568;
+    margin-bottom: 2rem !important;
 }
 
 .create-button {
-  font-size: 1.2rem;
-  height: auto;
-  padding: 0.5rem 2rem;
+    font-size: 1.2rem;
+    height: auto;
+    padding: 0.5rem 2rem;
 }
 
 .background-element {
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  opacity: 0.1;
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    opacity: 0.1;
 }
 
 .left-top {
-  top: -100px;
-  left: -100px;
-  background: radial-gradient(circle, #667eea 0%, #764ba2 100%);
+    top: -100px;
+    left: -100px;
+    background: radial-gradient(circle, #667eea 0%, #764ba2 100%);
 }
 
 .right-bottom {
-  bottom: -100px;
-  right: -100px;
-  background: radial-gradient(circle, #fbc2eb 0%, #a6c1ee 100%);
+    bottom: -100px;
+    right: -100px;
+    background: radial-gradient(circle, #fbc2eb 0%, #a6c1ee 100%);
 }
 
 /* 为了确保 CreateCoupon 页面的样式不受影响，可以添加以下代码 */
 .create-coupon-container {
-  min-height: 100vh;
-  width: 100%;
-  background: linear-gradient(to bottom right, #a8c0ff, #3f2b96);
-  padding: 2rem;
-  box-sizing: border-box;
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to bottom right, #a8c0ff, #3f2b96);
+    padding: 2rem;
+    box-sizing: border-box;
 }
 
 .create-coupon-card {
-  width: 100%;
-  margin: 0 auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 0 24px;
-  margin-top: 24px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0 24px;
+    margin-top: 24px;
 }
 
 /* 为列表页面添加特定样式 */
 .list-page-card {
-  width: 100%;
-  margin: 0 auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* 调整表单布局 */
 .search-form {
-  padding: 24px;
-  background: #fafafa;
-  border-radius: 4px;
-  margin-bottom: 24px;
+    padding: 24px;
+    background: #fafafa;
+    border-radius: 4px;
+    margin-bottom: 24px;
 }
 
 /* 添加新的样式 */
 .left-section {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .nav-links {
-  margin-left: 24px;
-  display: flex;
-  gap: 8px;
+    margin-left: 24px;
+    display: flex;
+    gap: 8px;
 }
 
 .nav-links .ant-btn-link {
-  color: #1890ff;
-  font-weight: 500;
+    color: #1890ff;
+    font-weight: 500;
 }
 
 .nav-links .ant-btn-link:hover {
-  color: #40a9ff;
+    color: #40a9ff;
 }
