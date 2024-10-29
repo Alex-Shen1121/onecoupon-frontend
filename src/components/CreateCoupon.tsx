@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Form, Input, Select, InputNumber, Button, Card, Typography, message, Row, Col, DatePicker } from 'antd';
-import { ShopOutlined, TagOutlined } from '@ant-design/icons';
+import { Form, Input, Select, InputNumber, Button, Card, Typography, message, Row, Col, DatePicker, Tooltip, Layout } from 'antd';
+import { ShopOutlined, TagOutlined, UserOutlined, LogoutOutlined, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { CouponState } from '../types/coupon';
 import { createCouponTemplate } from '../api/couponApi';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const { Option } = Select;
 const { TextArea } = Input;
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
+const { Header } = Layout;
 
 // 配置全局 message
 message.config({
@@ -20,6 +22,13 @@ message.config({
 const CreateCoupon: React.FC = () => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
+
+  // 用户信息（暂时使用默认值）
+  const userInfo = {
+    userId: '100012345',
+    username: 'shency',
+    shopId: '1000501L'
+  };
 
   const onFinish = async (values: CouponState) => {
     setIsLoading(true);
@@ -49,8 +58,8 @@ const CreateCoupon: React.FC = () => {
       target: "1",
       type: "1",
       validTime: [
-        moment("2023-08-22 11:05:55"),
-        moment("2025-10-23 01:27:00")
+        moment("2024-10-22 11:05:55"),
+        moment("2025-06-06 01:27:00")
       ],
       stock: 91,
       receiveRule: "{}",
@@ -60,125 +69,152 @@ const CreateCoupon: React.FC = () => {
 
   return (
     <div className="create-coupon-container">
-      <Card className="create-coupon-card">
-        <Title level={2} className="text-center mb-8">
-          <TagOutlined className="mr-2" />
-          创建新优惠券
-        </Title>
-        <Button onClick={setDefaultConfig} style={{ marginBottom: '20px' }}>默认配置</Button>
-        <Form
-          form={form}
-          name="coupon_form"
-          onFinish={onFinish}
-          layout="vertical"
-          initialValues={{
-            source: '0',
-            target: '1',
-            type: '1',
-            stock: 1,
-            receiveRule: '{}',
-            consumeRule: '{}',
-          }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="name" label="优惠券名称" rules={[{ required: true, message: '请输入优惠券名称' }]}>
-                <Input prefix={<ShopOutlined />} placeholder="输入优惠券名称" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="source" label="优惠券来源">
-                <Select>
-                  <Option value="0">店铺券</Option>
-                  <Option value="1">平台券</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
+      <div className="content-wrapper">
+        <Header className="status-bar">
+          <div className="left-section">
+            <div className="project-name">牛券</div>
+            <div className="nav-links">
+              <Link to="/create-coupon">
+                <Button type="link" icon={<PlusOutlined />}>创建优惠券</Button>
+              </Link>
+              <Link to="/list">
+                <Button type="link" icon={<UnorderedListOutlined />}>优惠券列表</Button>
+              </Link>
+            </div>
+          </div>
+          <div className="user-actions">
+            <Tooltip title={
+              <div>
+                <p>用户ID: {userInfo.userId}</p>
+                <p>用户名: {userInfo.username}</p>
+                <p>商铺ID: {userInfo.shopId}</p>
+              </div>
+            }>
+              <Button icon={<UserOutlined />} type="text">用户状态</Button>
+            </Tooltip>
+            <Button icon={<LogoutOutlined />} type="text">退出登录</Button>
+          </div>
+        </Header>
+        <Card className="create-coupon-card">
+          <Title level={2} className="text-center mb-8">
+            <TagOutlined className="mr-2" />
+            创建新优惠券
+          </Title>
+          <Button onClick={setDefaultConfig} style={{ marginBottom: '20px' }}>默认配置</Button>
+          <Form
+            form={form}
+            name="coupon_form"
+            onFinish={onFinish}
+            layout="vertical"
+            initialValues={{
+              source: '0',
+              target: '1',
+              type: '1',
+              stock: 1,
+              receiveRule: '{}',
+              consumeRule: '{}',
+            }}
+          >
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item name="name" label="优惠券名称" rules={[{ required: true, message: '请输入优惠券名称' }]}>
+                  <Input prefix={<ShopOutlined />} placeholder="输入优惠券名称" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="source" label="优惠券来源">
+                  <Select>
+                    <Option value="0">店铺券</Option>
+                    <Option value="1">平台券</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="target" label="优惠对象">
-                <Select>
-                  <Option value="0">商品专属</Option>
-                  <Option value="1">全店通用</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                noStyle
-                shouldUpdate={(prevValues, currentValues) => prevValues.target !== currentValues.target}
-              >
-                {({ getFieldValue }) =>
-                  getFieldValue('target') === '0' ? (
-                    <Form.Item name="goods" label="优惠商品编码">
-                      <Input placeholder="输入商品编码" />
-                    </Form.Item>
-                  ) : null
-                }
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item name="target" label="优惠对象">
+                  <Select>
+                    <Option value="0">商品专属</Option>
+                    <Option value="1">全店通用</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, currentValues) => prevValues.target !== currentValues.target}
+                >
+                  {({ getFieldValue }) =>
+                    getFieldValue('target') === '0' ? (
+                      <Form.Item name="goods" label="优惠商品编码">
+                        <Input placeholder="输入商品编码" />
+                      </Form.Item>
+                    ) : null
+                  }
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item name="type" label="优惠类型">
-                <Select>
-                  <Option value="0">立减券</Option>
-                  <Option value="1">满减券</Option>
-                  <Option value="2">折扣券</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={16}>
-              <Form.Item 
-                name="validTime" 
-                label="有效期" 
-                rules={[{ required: true, message: '请选择有效期' }]}
-              >
-                <RangePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  className="w-full"
-                  placeholder={['开始时间', '结束时间']}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Item name="type" label="优惠类型">
+                  <Select>
+                    <Option value="0">立减券</Option>
+                    <Option value="1">满减券</Option>
+                    <Option value="2">折扣券</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={16}>
+                <Form.Item 
+                  name="validTime" 
+                  label="有效期" 
+                  rules={[{ required: true, message: '请选择有效期' }]}
+                >
+                  <RangePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    className="w-full"
+                    placeholder={['开始时间', '结束时间']}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item 
-                name="stock" 
-                label="库存" 
-                rules={[
-                  { required: true, message: '请输入库存数量' },
-                  { type: 'number', min: 1, message: '库存必须大于等于1' }
-                ]}
-              >
-                <InputNumber min={1} className="w-full" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="receiveRule" label="领取规则 (JSON格式)">
-                <TextArea rows={4} placeholder="输入JSON格式的领取规则" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="consumeRule" label="消耗规则 (JSON格式)">
-                <TextArea rows={4} placeholder="输入JSON格式的消耗规则" />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Item 
+                  name="stock" 
+                  label="库存" 
+                  rules={[
+                    { required: true, message: '请输入库存数量' },
+                    { type: 'number', min: 1, message: '库存必须大于等于1' }
+                  ]}
+                >
+                  <InputNumber min={1} className="w-full" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="receiveRule" label="领取规则 (JSON格式)">
+                  <TextArea rows={4} placeholder="输入JSON格式的领取规则" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="consumeRule" label="消耗规则 (JSON格式)">
+                  <TextArea rows={4} placeholder="输入JSON格式的消耗规则" />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading} className="w-full">
-              {isLoading ? '创建中...' : '创建优惠券'}
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={isLoading} className="w-full">
+                {isLoading ? '创建中...' : '创建优惠券'}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
     </div>
   );
 };

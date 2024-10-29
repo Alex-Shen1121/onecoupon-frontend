@@ -83,8 +83,36 @@ html, body, #root {
 }
 
 .content-wrapper {
-  text-align: center;
-  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.status-bar {
+  background: #fff;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.project-name {
+  font-weight: bold;
+  font-size: 18px;
+  color: #1890ff;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+}
+
+.user-actions .ant-btn {
+  margin-left: 10px;
 }
 
 .main-title {
@@ -138,8 +166,45 @@ html, body, #root {
 }
 
 .create-coupon-card {
-  max-width: 800px;
   width: 100%;
   margin: 0 auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0 24px;
+  margin-top: 24px;
+}
+
+/* 为列表页面添加特定样式 */
+.list-page-card {
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 调整表单布局 */
+.search-form {
+  padding: 24px;
+  background: #fafafa;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+/* 添加新的样式 */
+.left-section {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  margin-left: 24px;
+  display: flex;
+  gap: 8px;
+}
+
+.nav-links .ant-btn-link {
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.nav-links .ant-btn-link:hover {
+  color: #40a9ff;
 }
