@@ -150,3 +150,78 @@ export const terminateCouponTemplate = async (couponTemplateId: bigint): Promise
 
   return await response.json();
 };
+
+// 增加优惠券库存
+export const increaseCouponStock = async (couponTemplateId: bigint, stock: number): Promise<ApiResponse> => {
+  const response = await fetch(
+    `${API_BASE_URL}/coupon-template/increase-stock?couponTemplateId=${couponTemplateId.toString()}&stock=${stock}`,
+    {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+// 下载优惠券模板文件
+export const downloadTemplateFile = async (rowNum: number): Promise<Blob> => {
+  const response = await fetch(
+    `${API_BASE_URL}/coupon-task/download-template-file?rowNum=${rowNum}`,
+    {
+      method: 'GET',
+      headers: {
+        'Accept': '*/*',
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.blob();
+};
+
+// 创建分发任务
+export const createCouponTask = async (
+  taskName: string,
+  notifyType: string,
+  couponTemplateId: bigint,
+  sendType: string,
+  sendTime: string | null,
+  file: File
+): Promise<ApiResponse> => {
+  const formData = new FormData();
+  formData.append('taskName', taskName);
+  formData.append('notifyType', notifyType);
+  formData.append('couponTemplateId', couponTemplateId.toString());
+  formData.append('sendType', sendType);
+  if (sendTime) {
+    formData.append('sendTime', sendTime);
+  }
+  formData.append('file', file);
+
+  const response = await fetch(
+    `${API_BASE_URL}/coupon-task/create`,
+    {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+      },
+      body: formData
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Input, Select, InputNumber, Button, Card, Typography, message, Row, Col, DatePicker, Tooltip, Layout } from 'antd';
-import { ShopOutlined, TagOutlined, UserOutlined, LogoutOutlined, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { ShopOutlined, TagOutlined, UserOutlined, LogoutOutlined, PlusOutlined, UnorderedListOutlined, ToolOutlined } from '@ant-design/icons';
 import { CouponState } from '../types/coupon';
 import { createCouponTemplate } from '../api/couponApi';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import StatusBar from './common/StatusBar';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -58,8 +59,8 @@ const CreateCoupon: React.FC = () => {
       target: "1",
       type: "1",
       validTime: [
-        moment("2024-10-22 11:05:55"),
-        moment("2025-06-06 01:27:00")
+        moment(),
+        moment().add(1, 'minutes')
       ],
       stock: 91,
       receiveRule: "{}",
@@ -70,31 +71,7 @@ const CreateCoupon: React.FC = () => {
   return (
     <div className="create-coupon-container">
       <div className="content-wrapper">
-        <Header className="status-bar">
-          <div className="left-section">
-            <div className="project-name">牛券</div>
-            <div className="nav-links">
-              <Link to="/create-coupon">
-                <Button type="link" icon={<PlusOutlined />}>创建优惠券</Button>
-              </Link>
-              <Link to="/list">
-                <Button type="link" icon={<UnorderedListOutlined />}>优惠券列表</Button>
-              </Link>
-            </div>
-          </div>
-          <div className="user-actions">
-            <Tooltip title={
-              <div>
-                <p>用户ID: {userInfo.userId}</p>
-                <p>用户名: {userInfo.username}</p>
-                <p>商铺ID: {userInfo.shopId}</p>
-              </div>
-            }>
-              <Button icon={<UserOutlined />} type="text">用户状态</Button>
-            </Tooltip>
-            <Button icon={<LogoutOutlined />} type="text">退出登录</Button>
-          </div>
-        </Header>
+        <StatusBar userInfo={userInfo} />
         <Card className="create-coupon-card">
           <Title level={2} className="text-center mb-8">
             <TagOutlined className="mr-2" />
@@ -113,6 +90,7 @@ const CreateCoupon: React.FC = () => {
               stock: 1,
               receiveRule: '{}',
               consumeRule: '{}',
+              validTime: [moment(), moment().add(2, 'days')]
             }}
           >
             <Row gutter={16}>
